@@ -34,7 +34,7 @@ func menu() {
 
 // Task represents a to-do item with relevant details such as name, completion status, due date, and creation time.
 type Task struct {
-	Id        int
+	ID        int
 	Name      string
 	Completed bool
 	DueDate   time.Time
