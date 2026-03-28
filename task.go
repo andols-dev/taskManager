@@ -32,6 +32,8 @@ func menu() {
 
 }
 
+var tasks []Task
+
 // Task represents a to-do item with relevant details such as name, completion status, due date, and creation time.
 type Task struct {
 	ID        int
@@ -42,13 +44,16 @@ type Task struct {
 }
 
 func createTask(name string, dueDate time.Time) Task {
-	return Task{
+	task := Task{
 		ID:        generateID(),
 		Name:      name,
 		Completed: false,
 		DueDate:   dueDate,
 		CreatedAt: time.Now(),
 	}
+	// todo: add task to the list of tasks
+	tasks = append(tasks, task)
+
 }
 
 func generateID() int {
