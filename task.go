@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -35,10 +38,41 @@ func menu() {
 			fmt.Println("Task created successfully!")
 
 		case "2":
-			fmt.Println("Viewing tasks...")
-
+			fmt.Println("Tasks:")
+			if len(tasks) == 0 {
+				fmt.Println("  (no tasks yet)")
+			} else {
+				for _, t := range tasks {
+					status := "open"
+					if t.Completed {
+						status = "completed"
+					}
+					fmt.Printf("- ID: %d; %s; due %s; status: %s\n", t.ID, t.Name, t.DueDate.Format("2006-01-02"), status)
+				}
+			}
 		case "3":
-			fmt.Println("Completing a task...")
+			fmt.Println("Enter ID of task to complete:")
+			var idStr string
+			fmt.Scanln(&idStr)
+			id, err := strconv.ParseInt(idStr, 10, 64)
+			if err != nil {
+				fmt.Println("Invalid task ID.")
+				break
+			}
+			completed := false
+			for i := range tasks {
+				if int64(tasks[i].ID) == id {
+					tasks[i].Completed = true
+					completed = true
+					break
+				}
+			}
+			if completed {
+				saveTasksToFile()
+				fmt.Println("Task marked as completed and saved.")
+			} else {
+				fmt.Println("Task ID not found.")
+			}
 		default:
 			fmt.Println("Invalid option, please try again.")
 		}
@@ -69,9 +103,47 @@ func createTask(name string, dueDate time.Time) {
 	}
 	// todo: add task to the list of tasks
 	tasks = append(tasks, task)
+	// add list to tasks.json
+	saveTasksToFile()
 
 }
 
 func generateID() int {
 	return int(time.Now().UnixNano())
+}
+
+func saveTasksToFile() {
+	data, err := json.MarshalIndent(tasks, "", "  ")
+	if err != nil {
+		fmt.Println("Error serializing tasks:", err)
+		return
+	}
+	if err := os.WriteFile("tasks.json", data, 0o644); err != nil {
+		fmt.Println("Error writing tasks.json:", err)
+	}
+}
+
+func loadTasksFromFile() {
+	if _, err := os.Stat("tasks.json"); err != nil {
+		if os.IsNotExist(err) {
+			return
+		}
+		fmt.Println("Error checking tasks.json:", err)
+		return
+	}
+	data, err := os.ReadFile("tasks.json")
+	if err != nil {
+		fmt.Println("Error reading tasks.json:", err)
+		return
+	}
+	if len(data) == 0 {
+		return
+	}
+	if err := json.Unmarshal(data, &tasks); err != nil {
+		fmt.Println("Error parsing tasks.json:", err)
+	}
+}
+
+func init() {
+	loadTasksFromFile()
 }
