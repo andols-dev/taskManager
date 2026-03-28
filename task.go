@@ -43,7 +43,7 @@ type Task struct {
 	CreatedAt time.Time
 }
 
-func createTask(name string, dueDate time.Time) Task {
+func createTask(name string, dueDate time.Time) {
 	task := Task{
 		ID:        generateID(),
 		Name:      name,
