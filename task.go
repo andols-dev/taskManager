@@ -18,9 +18,25 @@ func menu() {
 	for input != "4" {
 		switch input {
 		case "1":
-			fmt.Println("Adding a new task...")
+			fmt.Println("Add a new task")
+			fmt.Println("Enter name")
+			var name string
+			fmt.Scanln(&name)
+			fmt.Println("Enter due date (YYYY-MM-DD)")
+			var dueDateStr string
+			fmt.Scanln(&dueDateStr)
+			dueDate, err := time.Parse("2006-01-02", dueDateStr)
+			if err != nil {
+				fmt.Println("Invalid date format. Please use YYYY-MM-DD.")
+				break
+			}
+			createTask(name, dueDate)
+			// how to show success message after creating a task?
+			fmt.Println("Task created successfully!")
+
 		case "2":
 			fmt.Println("Viewing tasks...")
+
 		case "3":
 			fmt.Println("Completing a task...")
 		default:
