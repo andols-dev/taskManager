@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func menu() {
 	fmt.Println("Welcome to the Task Manager!")
@@ -27,4 +30,13 @@ func menu() {
 		fmt.Scanln(&input)
 	}
 
+}
+
+// Task represents a to-do item with relevant details such as name, completion status, due date, and creation time.
+type Task struct {
+	Id        int
+	Name      string
+	Completed bool
+	DueDate   time.Time
+	CreatedAt time.Time
 }
