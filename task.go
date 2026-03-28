@@ -40,3 +40,17 @@ type Task struct {
 	DueDate   time.Time
 	CreatedAt time.Time
 }
+
+func createTask(name string, dueDate time.Time) Task {
+	return Task{
+		ID:        generateID(),
+		Name:      name,
+		Completed: false,
+		DueDate:   dueDate,
+		CreatedAt: time.Now(),
+	}
+}
+
+func generateID() int {
+	return int(time.Now().UnixNano())
+}
